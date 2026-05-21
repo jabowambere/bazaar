@@ -4,15 +4,214 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Product Hub</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <header>
-            <h1>ProductHub</h1>
-            <div class="auth-section">
-            <button id="loginBtn">Login</button>
-            <button id="logoutBtn">Logout</button>
+        <div class="page-shell">
+            <header class="topbar">
+                <a class="brand" href="#">
+                    <span class="brand-mark">PH</span>
+                    <span class="brand-copy">
+                        <strong>Product Hub</strong>
+                    </span>
+                </a>
+
+                <nav class="nav-links" aria-label="Primary">
+                    <a href="#explore">Explore</a>
+                    <a href="#collections">Collections</a>
+                    <a href="#membership">Membership</a>
+                    <a href="#newsletter">Updates</a>
+                </nav>
+
+                <div class="topbar-actions">
+                    <a class="ghost-button" href="#">Activate License</a>
+                    <button class="ghost-button" type="button" id="openProductModal">Add Product</button>
+                    <a class="solid-button" href="#">Become a Member</a>
+                </div>
+            </header>
+
+            <main>
+                <section class="hero">
+                    <div class="hero-copy">
+                        <p class="eyebrow">Membership Template</p>
+                        <h1>Meet the new home for your digital goods.</h1>
+                        <p class="hero-text">
+                            Sell premium assets, build a collector community, and turn every release into
+                            an event with a storefront that feels editorial instead of ordinary.
+                        </p>
+
+                        <form class="search-card" role="search" id="searchForm">
+                            <label class="sr-only" for="search">Search assets</label>
+                            <input id="search" type="search" placeholder="Search products by name, category, or description...">
+                            <button type="submit">Search</button>
+                        </form>
+
+                        <div class="filter-row" aria-label="Category filters" id="categoryFilters">
+                            <button class="filter-pill active" type="button" data-category="all">All</button>
+                        </div>
+
+                        <div class="hero-stats">
+                            <article>
+                                <strong id="statProductCount">0</strong>
+                                <span>Products loaded</span>
+                            </article>
+                            <article>
+                                <strong id="statCategoryCount">0</strong>
+                                <span>Categories in catalog</span>
+                            </article>
+                            <article>
+                                <strong id="statAveragePrice">$0.00</strong>
+                                <span>Average price</span>
+                            </article>
+                        </div>
+                    </div>
+
+                    <aside class="hero-feature">
+                        <div class="feature-panel">
+                            <div class="feature-glow"></div>
+                            <p class="panel-label">Featured Drop</p>
+                            <h2 id="featuredTitle">Code Red</h2>
+                            <p class="panel-text" id="featuredDescription">
+                                A cinematic creature pack with stylized rigged poses, loop-ready textures,
+                                and member-only scene presets.
+                            </p>
+
+                            <div class="feature-art" id="featuredArt">
+                                <span class="art-orb art-orb-one"></span>
+                                <span class="art-orb art-orb-two"></span>
+                                <span class="art-card" id="featuredCategory">Maya</span>
+                            </div>
+
+                            <div class="panel-meta">
+                                <div>
+                                    <span>Category</span>
+                                    <strong id="featuredMetaCategory">Featured</strong>
+                                </div>
+                                <div>
+                                    <span>Value</span>
+                                    <strong id="featuredPrice">$69.99</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </section>
+
+                <section class="products-section" id="explore">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Explore</p>
+                            <h2>Curated assets with a collector-shop feel.</h2>
+                        </div>
+                        <button class="text-link button-reset" type="button" id="refreshProducts">Refresh catalog</button>
+                    </div>
+
+                    <div class="status-banner" id="statusBanner" hidden></div>
+                    <div class="product-grid" id="productGrid">
+                        <article class="empty-state">
+                            <h3>No products yet</h3>
+                            <p>Add your first product to populate the storefront from MongoDB.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="membership-section" id="membership">
+                    <div class="membership-copy">
+                        <p class="eyebrow">Membership</p>
+                        <h2>Sell access, not just downloads.</h2>
+                        <p>
+                            Turn your storefront into a members club with early drops, saved products,
+                            private scenes, and licensing perks bundled into one polished experience.
+                        </p>
+                    </div>
+
+                    <div class="membership-cards">
+                        <article class="membership-card">
+                            <span>Starter</span>
+                            <strong>Free access</strong>
+                            <p>Preview featured assets, join the list, and unlock occasional public drops.</p>
+                        </article>
+                        <article class="membership-card accent">
+                            <span>Pro</span>
+                            <strong>$19 / month</strong>
+                            <p>Get the full asset library, license activations, weekly releases, and bonus files.</p>
+                        </article>
+                        <article class="membership-card">
+                            <span>Studio</span>
+                            <strong>Team licensing</strong>
+                            <p>Built for agencies needing commercial usage rights, shared seats, and priority support.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="newsletter-section" id="newsletter">
+                    <div class="newsletter-panel">
+                        <div>
+                            <p class="eyebrow">Stay in the Loop</p>
+                            <h2>Get notified the second a new product drops.</h2>
+                        </div>
+
+                        <form class="newsletter-form">
+                            <label class="sr-only" for="email">Email address</label>
+                            <input id="email" type="email" placeholder="Email address">
+                            <button type="submit">Join mailing list</button>
+                        </form>
+                    </div>
+                </section>
+            </main>
         </div>
-        </header>
+
+        <div class="modal-backdrop" id="productModal" hidden>
+            <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+                <div class="modal-header">
+                    <div>
+                        <p class="eyebrow">Catalog Admin</p>
+                        <h2 id="productModalTitle">Add new product</h2>
+                    </div>
+                    <button class="modal-close" type="button" id="closeProductModal" aria-label="Close form">×</button>
+                </div>
+
+                <form class="product-form" id="productForm" enctype="multipart/form-data">
+                    <input type="hidden" id="productId" name="productId">
+
+                    <label>
+                        Product name
+                        <input type="text" id="productname" name="productname" required>
+                    </label>
+
+                    <label>
+                        Price
+                        <input type="number" id="productprice" name="productprice" min="0" step="0.01" required>
+                    </label>
+
+                    <label>
+                        Category
+                        <input type="text" id="productcategory" name="productcategory" placeholder="Shoes, Electronics, Clothes..." required>
+                    </label>
+
+                    <label>
+                        Description
+                        <textarea id="productdescription" name="productdescription" rows="4" placeholder="Short product pitch"></textarea>
+                    </label>
+
+                    <label>
+                        Product image
+                        <input type="file" id="productimage" name="productimage" accept=".jpg,.jpeg,.png,.webp">
+                    </label>
+
+                    <p class="form-hint" id="imageHint">Image is required for new products.</p>
+                    <div class="form-error" id="formError" hidden></div>
+
+                    <div class="form-actions">
+                        <button class="ghost-button" type="button" id="cancelProductModal">Cancel</button>
+                        <button class="solid-button" type="submit" id="submitProductForm">Save product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="js/script.js"></script>
     </body>
 </html>
