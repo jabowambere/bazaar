@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const dotenv=require('dotenv');
 const path=require('path');
+const cors=require('cors');
 
 dotenv.config();
 const app=express();
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
     }
     next();
 });
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
