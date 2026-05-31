@@ -11,7 +11,7 @@ function FeaturedPanel({ product }) {
         <div className="feature-glow"></div>
         <p className="panel-label">Featured Drop</p>
         <h2>Your next hero product</h2>
-        <p className="panel-text">Add a product and it will automatically appear as the featured item here.</p>
+        <p style={{color:'#9f3518'}}className="panel-text">Add a product and it will automatically appear as the featured item here.</p>
         <div className="feature-art">
           <span className="art-orb art-orb-one"></span>
           <span className="art-orb art-orb-two"></span>
@@ -30,7 +30,7 @@ function FeaturedPanel({ product }) {
       <div className="feature-glow"></div>
       <p className="panel-label">Featured Drop</p>
       <h2>{product.productname}</h2>
-      <p className="panel-text">{product.productdescription || 'No description yet for this product.'}</p>
+      <p className="panel-text" style={{color:'#9f3518'}}>{product.productdescription || 'No description yet for this product.'}</p>
       <div className={`feature-art${product.productimage ? ' has-image' : ''}`}>
         {product.productimage ? (
           <>
@@ -46,8 +46,8 @@ function FeaturedPanel({ product }) {
         )}
       </div>
       <div className="panel-meta">
-        <div><span>Category</span><strong>{product.productcategory || 'Uncategorized'}</strong></div>
-        <div><span>Value</span><strong>{formatCurrency(product.productprice)}</strong></div>
+        <div><span style={{color:'#9f3518'}}>Category</span><strong style={{color:'#9f3518'}}>{product.productcategory || 'Uncategorized'}</strong></div>
+        <div><span style={{color:'#9f3518'}}>Value</span><strong style={{color:'#9f3518'}}>{formatCurrency(product.productprice)}</strong></div>
       </div>
     </div>
   )

@@ -9,9 +9,9 @@ export default function ProductModal({ product, onClose, onSaved }) {
         <div className="modal-header">
           <div>
             <p className="eyebrow">Catalog Admin</p>
-            <h2 id="productModalTitle">{isEditing ? 'Edit product' : 'Add new product'}</h2>
+            <h2 style={{color:'#9f3518'}}id="productModalTitle">{isEditing ? 'Edit product' : 'Add new product'}</h2>
           </div>
-          <button className="modal-close" type="button" onClick={onClose} aria-label="Close form">×</button>
+          <button style={{color:'#9f3518'}}className="modal-close" type="button" onClick={onClose} aria-label="Close form">×</button>
         </div>
         <ProductForm product={product} onClose={onClose} onSaved={onSaved} />
       </div>

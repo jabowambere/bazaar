@@ -44,23 +44,23 @@ export default function ProductForm({ product, onClose, onSaved }) {
     <form className="product-form" onSubmit={handleSubmit}>
       <label>
         Product name
-        <input type="text" name="productname" defaultValue={product?.productname || ''} required />
+        <input style={{color:'#9f3518'}}type="text" name="productname" defaultValue={product?.productname || ''} required />
       </label>
       <label>
         Price
-        <input type="number" name="productprice" min="0" step="0.01" defaultValue={product?.productprice ?? ''} required />
+        <input style={{color:'#9f3518'}}type="number" name="productprice" min="0" step="0.01" defaultValue={product?.productprice ?? ''} required />
       </label>
       <label>
         Category
-        <input type="text" name="productcategory" placeholder="Shoes, Electronics, Clothes..." defaultValue={product?.productcategory || ''} required />
+        <input style={{color:'#9f3518'}}type="text" name="productcategory" placeholder="Shoes, Electronics, Clothes..." defaultValue={product?.productcategory || ''} required />
       </label>
       <label>
         Description
-        <textarea name="productdescription" rows="4" placeholder="Short product pitch" defaultValue={product?.productdescription || ''} />
+        <textarea style={{color:'#9f3518'}}name="productdescription" rows="4" placeholder="Short product pitch" defaultValue={product?.productdescription || ''} />
       </label>
       <label>
         Product image
-        <input type="file" name="productimage" accept=".jpg,.jpeg,.png,.webp" ref={imageRef} />
+        <input style={{color:'#9f3518'}}type="file" name="productimage" accept=".jpg,.jpeg,.png,.webp" ref={imageRef} />
       </label>
 
       <p className="form-hint">
@@ -70,7 +70,7 @@ export default function ProductForm({ product, onClose, onSaved }) {
       {error && <div className="form-error">{error}</div>}
 
       <div className="form-actions">
-        <button className="ghost-button" type="button" onClick={onClose}>Cancel</button>
+        <button style={{color:'#9f3518'}}className="ghost-button" type="button" onClick={onClose}>Cancel</button>
         <button className="solid-button" type="submit" disabled={loading}>
           {loading
             ? (isEditing ? 'Updating...' : 'Saving...')

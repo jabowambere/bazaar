@@ -64,8 +64,13 @@ export default function App() {
         <div className="page-shell">
           <Topbar onAddProduct={() => setModalProduct(null)} />
           {successMessage && (
-            <div className="status-banner success" style={{ margin: '12px 0' }}>
+            <div style={{ margin: '12px 0', padding: '14px 18px', borderRadius: '18px', background: 'rgba(221, 242, 226, 0.9)', color: '#9f3518', border: '1px solid rgba(159,53,24,0.2)' }}>
               {successMessage}
+            </div>
+          )}
+          {error && (
+            <div style={{ margin: '12px 0', padding: '14px 18px', borderRadius: '18px', background: 'rgba(248, 223, 218, 0.9)', color: '#9f3518', border: '1px solid rgba(159,53,24,0.2)' }}>
+              {error}
             </div>
           )}
           <main>
