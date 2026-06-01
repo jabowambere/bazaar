@@ -345,7 +345,7 @@ h2 {
     overflow: hidden;
     border-radius: 34px;
     padding: 30px;
-    min-height: 620px;
+    min-height: 440px;
     background:
         radial-gradient(circle at top left, rgba(245, 232, 215, 0.7), transparent 35%),
         linear-gradient(180deg, rgba(255, 248, 239, 0.9), rgba(244, 233, 220, 0.82));
@@ -376,7 +376,7 @@ h2 {
 
 .feature-art {
     position: relative;
-    min-height: 310px;
+    min-height: 220px;
     margin: 28px 0;
     border-radius: 30px;
     overflow: hidden;
