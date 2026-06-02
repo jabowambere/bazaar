@@ -18,6 +18,7 @@ import Notifications from './pages/Notifications'
 import Profile from './pages/Profile'
 
 function getToken() { return localStorage.getItem('token') }
+const API = import.meta.env.VITE_API_URL || ''
 
 function AppInner() {
   const { user, logout } = useAuth()
@@ -35,7 +36,7 @@ function AppInner() {
 
   async function fetchAllProducts() {
     try {
-      const res = await fetch('/products')
+      const res = await fetch(`${API}/products`)
       const data = await res.json()
       setAllProducts(Array.isArray(data) ? data : [])
     } catch { }
@@ -44,7 +45,7 @@ function AppInner() {
   async function fetchMyProducts() {
     if (!user) return
     try {
-      const res = await fetch('/products/mine', {
+      const res = await fetch(`${API}/products/mine`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         credentials: 'include'
       })
@@ -56,7 +57,7 @@ function AppInner() {
   async function fetchCart() {
     if (!user) return
     try {
-      const res = await fetch('/cart', {
+      const res = await fetch(`${API}/cart`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         credentials: 'include'
       })
@@ -75,7 +76,7 @@ function AppInner() {
 
   async function handleAddToCart(product) {
     try {
-      const res = await fetch('/cart/add', {
+      const res = await fetch(`${API}/cart/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         credentials: 'include',
@@ -92,7 +93,7 @@ function AppInner() {
 
   async function handleRemoveFromCart(productId) {
     try {
-      const res = await fetch(`/cart/remove/${productId}`, {
+      const res = await fetch(`${API}/cart/remove/${productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${getToken()}` },
         credentials: 'include'
@@ -115,7 +116,7 @@ function AppInner() {
         setConfirm(null)
         setPageLoading(true)
         try {
-          const res = await fetch(`/products/${product._id}`, {
+          const res = await fetch(`${API}/products/${product._id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()}` },
             credentials: 'include'
