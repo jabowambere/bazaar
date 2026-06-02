@@ -10,100 +10,201 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="page-shell">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-mark">P</div>
-      <div class="brand-copy">
-        <strong>ProductHub</strong>
-        <small>Marketplace</small>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-        Browse Products
+    <!-- Topbar -->
+    <header class="topbar">
+      <a href="#" class="brand-logo">
+        <div class="brand-mark">P</div>
       </a>
-    </nav>
-  </aside>
+      <nav style="display:flex;align-items:center;gap:12px;">
+        <a href="#explore" class="ghost-button">Explore</a>
+        <a href="#newsletter" class="ghost-button">Updates</a>
+        <button class="solid-button" onclick="openModal()"><i data-lucide="plus"></i> Add Product</button>
+      </nav>
+    </header>
 
-  <!-- Main -->
-  <main class="main-content">
+    <main>
 
-    <!-- Page heading -->
-    <div class="page-heading">
-      <p class="eyebrow">Marketplace</p>
-      <h1>Browse Products</h1>
-    </div>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Membership Template</p>
+          <h1>Meet the new home for your digital goods.</h1>
+          <p class="hero-text">
+            Sell premium assets, build a collector community, and turn every release into
+            an event with a storefront that feels editorial instead of ordinary.
+          </p>
 
-    <!-- Search & Sort -->
-    <div class="toolbar">
-      <input type="search" id="searchInput" placeholder="Search products..." />
-      <select id="sortSelect">
-        <option value="newest">Newest</option>
-        <option value="price-asc">Price: Low to High</option>
-        <option value="price-desc">Price: High to Low</option>
-      </select>
-      <button id="openAddBtn" class="add-btn">+ Add Product</button>
-    </div>
+          <form class="search-card" onsubmit="handleSearch(event)">
+            <input id="searchInput" type="search" placeholder="Search products by name, category, or description..." />
+            <button type="submit">Search</button>
+          </form>
 
-    <!-- Category filters -->
-    <div class="filter-row" id="filterRow">
-      <button class="filter-pill active" data-cat="All">All</button>
-      <button class="filter-pill" data-cat="Electronics">Electronics</button>
-      <button class="filter-pill" data-cat="Clothing">Clothing</button>
-      <button class="filter-pill" data-cat="Shoes">Shoes</button>
-      <button class="filter-pill" data-cat="Books">Books</button>
-      <button class="filter-pill" data-cat="Furniture">Furniture</button>
-    </div>
+          <div class="filter-row" id="filterRow">
+            <button class="filter-pill active" onclick="setCategory('all', this)">All</button>
+          </div>
 
-    <!-- Product grid -->
-    <div class="product-grid" id="productGrid"></div>
+          <div class="hero-stats">
+            <article>
+              <strong id="statCount" style="color:#9f3518">0</strong>
+              <span>Products loaded</span>
+            </article>
+            <article>
+              <strong id="statCats" style="color:#9f3518">0</strong>
+              <span>Categories in catalog</span>
+            </article>
+            <article>
+              <strong id="statAvg" style="color:#9f3518">$0.00</strong>
+              <span>Average price</span>
+            </article>
+          </div>
+        </div>
 
-  </main>
+        <aside class="hero-feature">
+          <div class="feature-panel" id="featuredPanel">
+            <div class="feature-glow"></div>
+            <p class="panel-label">Featured Drop</p>
+            <h2>Your next hero product</h2>
+            <p class="panel-text" style="color:#9f3518">Add a product and it will automatically appear as the featured item here.</p>
+            <div class="feature-art">
+              <span class="art-orb art-orb-one"></span>
+              <span class="art-orb art-orb-two"></span>
+              <span class="art-card">Catalog</span>
+            </div>
+            <div class="panel-meta">
+              <div><span>Category</span><strong>No category yet</strong></div>
+              <div><span>Value</span><strong>$0.00</strong></div>
+            </div>
+          </div>
+        </aside>
+      </section>
 
-  <!-- Toast -->
-  <div id="toast"></div>
+      <!-- Products Section -->
+      <section class="products-section" id="explore">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Explore</p>
+            <h2>Curated assets with a collector-shop feel.</h2>
+          </div>
+          <button class="solid-button" onclick="openModal()"><i data-lucide="plus"></i> Add Product</button>
+        </div>
+        <div class="product-grid" id="productGrid">
+          <article class="empty-state product-card">
+            <h3>Loading products...</h3>
+            <p>Please wait.</p>
+          </article>
+        </div>
+      </section>
 
-  <!-- Add/Edit Modal -->
-  <div id="modal" class="modal-backdrop hidden">
+      <!-- Membership Section -->
+      <section class="membership-section" id="membership">
+        <div class="membership-copy">
+          <p class="eyebrow">Membership</p>
+          <h2>Sell access, not just downloads.</h2>
+          <p>
+            Turn your storefront into a members club with early drops, saved products,
+            private scenes, and licensing perks bundled into one polished experience.
+          </p>
+        </div>
+        <div class="membership-cards">
+          <article class="membership-card" style="color:#9f3518">
+            <span>Starter</span>
+            <strong>Free access</strong>
+            <p style="color:#9f3518">Preview featured assets, join the list, and unlock occasional public drops.</p>
+          </article>
+          <article class="membership-card accent">
+            <span>Pro</span>
+            <strong>$19 / month</strong>
+            <p>Get the full asset library, license activations, weekly releases, and bonus files.</p>
+          </article>
+          <article class="membership-card" style="color:#9f3518">
+            <span>Studio</span>
+            <strong>Team licensing</strong>
+            <p style="color:#9f3518">Built for agencies needing commercial usage rights, shared seats, and priority support.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Newsletter Section -->
+      <section class="newsletter-section" id="newsletter">
+        <div class="newsletter-panel">
+          <div>
+            <p class="eyebrow" style="color:#9f3518">Stay in the Loop</p>
+            <h2 style="color:#9f3518">Get notified the second a new product drops.</h2>
+          </div>
+          <form class="newsletter-form" onsubmit="event.preventDefault()">
+            <label class="sr-only" for="emailInput">Email address</label>
+            <input id="emailInput" type="email" placeholder="Email address" />
+            <button type="submit">Join mailing list</button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-mark" style="margin-bottom:14px;width:52px;height:52px;font-size:1.3rem">P</div>
+          <p style="color:var(--muted);font-size:0.95rem;line-height:1.7;max-width:30ch;margin:0">
+            A curated storefront for premium digital assets, built for collectors and creators.
+          </p>
+        </div>
+        <div>
+          <p class="footer-col-title">Catalog</p>
+          <ul><li><a href="#">Explore</a></li><li><a href="#">Collections</a></li><li><a href="#">New Arrivals</a></li><li><a href="#">Featured</a></li></ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Membership</p>
+          <ul><li><a href="#">Starter</a></li><li><a href="#">Pro</a></li><li><a href="#">Studio</a></li><li><a href="#">Activate License</a></li></ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> ProductHub. All rights reserved.</p>
+        <div><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Add / Edit Modal -->
+  <div id="productModal" class="modal-backdrop hidden">
     <div class="modal-panel">
       <div class="modal-header">
         <div>
           <p class="eyebrow">Catalog</p>
           <h2 id="modalTitle">Add new product</h2>
         </div>
-        <button class="modal-close" id="modalClose">×</button>
+        <button class="modal-close" onclick="closeModal()"><i data-lucide="x"></i></button>
       </div>
       <form id="productForm" class="product-form">
         <input type="hidden" id="productId" />
-        <label>
-          Name
+        <label>Name
           <input type="text" id="fname" placeholder="Product name" required />
         </label>
-        <label>
-          Price
+        <label>Price
           <input type="number" id="fprice" placeholder="0.00" min="0" step="0.01" required />
         </label>
-        <label>
-          Category
+        <label>Category
           <input type="text" id="fcategory" placeholder="e.g. Electronics" required />
         </label>
-        <label>
-          Description
+        <label>Description
           <textarea id="fdescription" placeholder="Product description..." rows="3"></textarea>
         </label>
-        <label>
-          Image
+        <label>Image
           <input type="file" id="fimage" accept="image/jpeg,image/jpg,image/png,image/webp" />
         </label>
         <img id="imagePreview" class="hidden" alt="Preview" />
-        <div id="formError" class="form-error hidden"></div>
+        <p id="formError" class="form-error hidden"></p>
         <div class="form-actions">
-          <button type="button" id="cancelFormBtn" class="ghost-button">Cancel</button>
-          <button type="submit" class="solid-button">Save Product</button>
+          <button type="button" class="ghost-button" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="solid-button"><i data-lucide="save"></i> Save Product</button>
         </div>
       </form>
     </div>
@@ -117,16 +218,17 @@
           <p class="eyebrow">Confirm</p>
           <h2>Delete Product</h2>
         </div>
-        <button class="modal-close" id="confirmClose">×</button>
+        <button class="modal-close" onclick="closeConfirm()"><i data-lucide="x"></i></button>
       </div>
       <p id="confirmText" style="color:#6f665d;line-height:1.6;margin-bottom:24px"></p>
       <div class="form-actions">
-        <button id="cancelDeleteBtn" class="ghost-button">Cancel</button>
-        <button id="confirmDeleteBtn" class="danger-button">Delete</button>
+        <button class="ghost-button" onclick="closeConfirm()">Cancel</button>
+        <button class="danger-button" onclick="confirmDelete()"><i data-lucide="trash-2"></i> Delete</button>
       </div>
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
 </body>
 </html>
