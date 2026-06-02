@@ -5,7 +5,9 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Sidebar from './components/Sidebar'
 import ProductModal from './components/ProductModal'
 import AuthModal from './components/AuthModal'
+import ConfirmModal from './components/ConfirmModal'
 import ProtectedRoute from './components/ProtectedRoute'
+import CupLoader from './components/CupLoader'
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
 import BrowseProducts from './pages/BrowseProducts'
@@ -15,44 +17,121 @@ import Chat from './pages/Chat'
 import Notifications from './pages/Notifications'
 import Profile from './pages/Profile'
 
+function getToken() { return localStorage.getItem('token') }
+
 function AppInner() {
   const { user, logout } = useAuth()
-  const [products, setProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([])
+  const [myProducts, setMyProducts] = useState([])
+  const [cart, setCart] = useState({ items: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [modalProduct, setModalProduct] = useState(undefined)
   const [showAuth, setShowAuth] = useState(false)
+  const [confirm, setConfirm] = useState(null)
+  const [pageLoading, setPageLoading] = useState(false)
   const navigate = useNavigate()
 
-  async function fetchProducts() {
-    setLoading(true)
-    setError(null)
+  async function fetchAllProducts() {
     try {
       const res = await fetch('/products')
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Fetching products failed')
-      setProducts(Array.isArray(data) ? data : [])
-    } catch (err) {
-      setError(err.message || 'Unable to fetch products.')
-    } finally {
-      setLoading(false)
+      setAllProducts(Array.isArray(data) ? data : [])
+    } catch { }
+  }
+
+  async function fetchMyProducts() {
+    if (!user) return
+    try {
+      const res = await fetch('/products/mine', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+        credentials: 'include'
+      })
+      const data = await res.json()
+      setMyProducts(Array.isArray(data) ? data : [])
+    } catch { }
+  }
+
+  async function fetchCart() {
+    if (!user) return
+    try {
+      const res = await fetch('/cart', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+        credentials: 'include'
+      })
+      const data = await res.json()
+      setCart(data || { items: [] })
+    } catch { }
+  }
+
+  useEffect(() => {
+    fetchAllProducts().finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    if (user) { fetchMyProducts(); fetchCart() }
+  }, [user])
+
+  async function handleAddToCart(product) {
+    try {
+      const res = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        credentials: 'include',
+        body: JSON.stringify({ productId: product._id })
+      })
+      const data = await res.json()
+      setCart(data)
+      setSuccessMessage(`"${product.productname}" added to cart!`)
+      navigate('/cart')
+    } catch {
+      setError('Failed to add to cart.')
     }
   }
 
-  useEffect(() => { fetchProducts() }, [])
-
-  async function handleDelete(product) {
-    if (!window.confirm(`Delete "${product.productname}"?`)) return
+  async function handleRemoveFromCart(productId) {
     try {
-      const res = await fetch(`/products/${product._id}`, { method: 'DELETE' })
+      const res = await fetch(`/cart/remove/${productId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${getToken()}` },
+        credentials: 'include'
+      })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message)
-      setSuccessMessage('Product deleted successfully.')
-      fetchProducts()
-    } catch (err) {
-      setError(err.message || 'Unable to delete product.')
+      setCart(data)
+      setSuccessMessage('Item removed from cart.')
+    } catch {
+      setError('Failed to remove from cart.')
     }
+  }
+
+  function handleDelete(product) {
+    setConfirm({
+      title: 'Delete Product',
+      message: `Are you sure you want to delete "${product.productname}"? This cannot be undone.`,
+      confirmLabel: 'Delete',
+      type: 'danger',
+      onConfirm: async () => {
+        setConfirm(null)
+        setPageLoading(true)
+        try {
+          const res = await fetch(`/products/${product._id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${getToken()}` },
+            credentials: 'include'
+          })
+          const data = await res.json()
+          if (!res.ok) throw new Error(data.message)
+          setSuccessMessage('Product deleted successfully.')
+          fetchAllProducts()
+          fetchMyProducts()
+        } catch (err) {
+          setError(err.message || 'Unable to delete product.')
+        } finally {
+          setPageLoading(false)
+        }
+      }
+    })
   }
 
   function handleAuthSuccess() {
@@ -60,6 +139,7 @@ function AppInner() {
     navigate('/dashboard')
   }
 
+  const cartCount = cart?.items?.length || 0
   const unreadCount = 3
 
   return (
@@ -70,18 +150,16 @@ function AppInner() {
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         <Routes>
-          {/* Public landing page */}
           <Route path="/" element={
             user ? <Navigate to="/dashboard" replace /> :
-            <LandingPage products={products} loading={loading} onLoginClick={() => setShowAuth(true)} />
+            <LandingPage products={allProducts} loading={loading} onLoginClick={() => setShowAuth(true)} />
           } />
 
-          {/* Protected dashboard layout */}
           <Route path="/*" element={
             <ProtectedRoute>
-              <div style={{ display: 'flex' }}>
-                <Sidebar unreadCount={unreadCount} onLogout={logout} user={user} />
-                <main style={{ marginLeft: '240px', flex: 1, padding: '40px', minHeight: '100vh' }}>
+              <div style={{ display: 'flex', minHeight: '100vh' }}>
+                <Sidebar unreadCount={unreadCount} cartCount={cartCount} onLogout={logout} user={user} />
+                <main style={{ marginLeft: '240px', flex: 1, padding: '40px', minHeight: '100vh', background: '#000000', boxSizing: 'border-box' }}>
                   {successMessage && (
                     <div style={{ marginBottom: '16px', padding: '14px 18px', borderRadius: '18px', background: 'rgba(221,242,226,0.9)', color: '#9f3518', border: '1px solid rgba(159,53,24,0.2)' }}>
                       {successMessage}
@@ -93,10 +171,10 @@ function AppInner() {
                     </div>
                   )}
                   <Routes>
-                    <Route path="/dashboard" element={<Dashboard products={products} user={user} onDeleteProduct={handleDelete} />} />
-                    <Route path="/browse" element={<BrowseProducts products={products} loading={loading} onEdit={setModalProduct} onDelete={handleDelete} />} />
-                    <Route path="/my-products" element={<MyProducts products={products} loading={loading} onAdd={() => setModalProduct(null)} onEdit={setModalProduct} onDelete={handleDelete} />} />
-                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/dashboard" element={<Dashboard products={allProducts} myProducts={myProducts} user={user} onDeleteProduct={handleDelete} />} />
+                    <Route path="/browse" element={<BrowseProducts products={allProducts} loading={loading} user={user} onAddToCart={handleAddToCart} onEdit={setModalProduct} onDelete={handleDelete} isAdmin={user?.role === 'admin'} />} />
+                    <Route path="/my-products" element={<MyProducts products={myProducts} loading={loading} onAdd={() => setModalProduct(null)} onEdit={setModalProduct} onDelete={handleDelete} />} />
+                    <Route path="/cart" element={<Cart cart={cart} onRemove={handleRemoveFromCart} />} />
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/profile" element={<Profile user={user} />} />
@@ -114,9 +192,27 @@ function AppInner() {
         <ProductModal
           product={modalProduct}
           onClose={() => setModalProduct(undefined)}
-          onSaved={(msg) => { setSuccessMessage(msg); fetchProducts(); setModalProduct(undefined) }}
+          onSaved={(msg) => {
+            setSuccessMessage(msg)
+            fetchAllProducts()
+            fetchMyProducts()
+            setModalProduct(undefined)
+          }}
         />
       )}
+
+      {confirm && (
+        <ConfirmModal
+          title={confirm.title}
+          message={confirm.message}
+          confirmLabel={confirm.confirmLabel}
+          type={confirm.type}
+          onConfirm={confirm.onConfirm}
+          onCancel={() => setConfirm(null)}
+        />
+      )}
+
+      {pageLoading && <CupLoader fullScreen />}
     </div>
   )
 }

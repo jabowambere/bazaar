@@ -28,7 +28,12 @@ export default function ProductForm({ product, onClose, onSaved }) {
     try {
       const url = isEditing ? `/products/${product._id}` : '/products'
       const method = isEditing ? 'PUT' : 'POST'
-      const res = await fetch(url, { method, body: formData })
+      const res = await fetch(url, {
+        method,
+        body: formData,
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        credentials: 'include'
+      })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Saving product failed')
       onSaved(isEditing ? 'Product updated successfully.' : 'Product created successfully.')

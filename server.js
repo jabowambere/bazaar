@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 app.use('/auth', require('./routes/auth'));
 app.use('/products', require('./routes/products'));
 app.use('/users', require('./routes/users'));
+app.use('/cart', require('./routes/cart'));
 
 app.use((err, req, res, next) => {
   console.error(err);

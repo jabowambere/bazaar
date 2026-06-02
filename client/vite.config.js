@@ -16,6 +16,7 @@ export default defineConfig({
       '/uploads': 'http://localhost:5000',
       '/auth': 'http://localhost:5000',
       '/users': 'http://localhost:5000',
+      '/cart': 'http://localhost:5000',
     }
   }
 })

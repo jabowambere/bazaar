@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Package, Users, LayoutGrid, DollarSign, Trash2 } from 'lucide-react'
 import StatCard from '../components/StatCard'
+import ConfirmModal from '../components/ConfirmModal'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
@@ -15,6 +16,8 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
   const [usersLoading, setUsersLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
 
+  const [confirm, setConfirm] = useState(null)
+
   useEffect(() => {
     fetch('/users', { headers: { Authorization: `Bearer ${getToken()}` }, credentials: 'include' })
       .then(r => r.json())
@@ -27,19 +30,27 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
   }, [])
 
   async function handleDeleteUser(user) {
-    if (!window.confirm(`Delete user "${user.name}"? This cannot be undone.`)) return
-    try {
-      const res = await fetch(`/users/${user._id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${getToken()}` },
-        credentials: 'include'
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message)
-      setUsers(prev => prev.filter(u => u._id !== user._id))
-    } catch (err) {
-      alert(err.message)
-    }
+    setConfirm({
+      title: 'Delete User',
+      message: `Are you sure you want to delete "${user.name}"? This will permanently remove their account.`,
+      confirmLabel: 'Delete User',
+      type: 'danger',
+      onConfirm: async () => {
+        setConfirm(null)
+        try {
+          const res = await fetch(`/users/${user._id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${getToken()}` },
+            credentials: 'include'
+          })
+          const data = await res.json()
+          if (!res.ok) throw new Error(data.message)
+          setUsers(prev => prev.filter(u => u._id !== user._id))
+        } catch (err) {
+          alert(err.message)
+        }
+      }
+    })
   }
 
   const totalValue = products.reduce((s, p) => s + (Number(p.productprice) || 0), 0)
@@ -139,7 +150,13 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
                   <td style={{ padding: '14px 20px', color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem' }}>{p.productcategory}</td>
                   <td style={{ padding: '14px 20px', color: '#9f3518', fontWeight: 700, fontSize: '0.88rem' }}>{formatCurrency(p.productprice)}</td>
                   <td style={{ padding: '14px 20px' }}>
-                    <button onClick={() => onDeleteProduct(p)} style={{ padding: '7px 12px', borderRadius: '999px', border: 'none', background: 'rgba(143,39,22,0.2)', color: '#d95f39', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
+                    <button onClick={() => setConfirm({
+                      title: 'Delete Product',
+                      message: `Are you sure you want to delete "${p.productname}"? This cannot be undone.`,
+                      confirmLabel: 'Delete',
+                      type: 'danger',
+                      onConfirm: () => { setConfirm(null); onDeleteProduct(p) }
+                    })} style={{ padding: '7px 12px', borderRadius: '999px', border: 'none', background: 'rgba(143,39,22,0.2)', color: '#d95f39', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                   </td>
                 </tr>
               ))}
@@ -186,6 +203,17 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
             </tbody>
           </table>
         </div>
+      )}
+
+      {confirm && (
+        <ConfirmModal
+          title={confirm.title}
+          message={confirm.message}
+          confirmLabel={confirm.confirmLabel}
+          type={confirm.type}
+          onConfirm={confirm.onConfirm}
+          onCancel={() => setConfirm(null)}
+        />
       )}
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import CupLoader from './CupLoader'
 
 export default function AuthModal({ onClose, onSuccess }) {
   const [mode, setMode] = useState('login')
@@ -31,11 +32,13 @@ export default function AuthModal({ onClose, onSuccess }) {
   }
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 100,
-      display: 'grid', placeItems: 'center', padding: '20px',
-      background: 'rgba(26,24,21,0.7)', backdropFilter: 'blur(10px)',
-    }} onClick={e => e.target === e.currentTarget && onClose()}>
+    <>
+      {loading && <CupLoader fullScreen />}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 100,
+        display: 'grid', placeItems: 'center', padding: '20px',
+        background: 'rgba(26,24,21,0.7)', backdropFilter: 'blur(10px)',
+      }} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={{
         width: 'min(100%, 440px)', padding: '36px',
         borderRadius: '28px', background: 'rgba(255,250,242,0.09)',
@@ -97,6 +100,7 @@ export default function AuthModal({ onClose, onSuccess }) {
           }}>{mode === 'login' ? 'Register' : 'Sign in'}</button>
         </p>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

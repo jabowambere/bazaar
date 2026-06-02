@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Home, Grid, Package, ShoppingCart, MessagesSquare, Bell, User, LogOut } from 'lucide-react'
 
-const links = [
+const userLinks = [
   { to: '/dashboard', icon: <Home size={18} />, label: 'Dashboard' },
   { to: '/browse', icon: <Grid size={18} />, label: 'Browse Products' },
   { to: '/my-products', icon: <Package size={18} />, label: 'My Products' },
@@ -11,7 +11,16 @@ const links = [
   { to: '/profile', icon: <User size={18} />, label: 'Profile' },
 ]
 
-export default function Sidebar({ unreadCount = 0, onLogout, user }) {
+const adminLinks = [
+  { to: '/dashboard', icon: <Home size={18} />, label: 'Dashboard' },
+  { to: '/browse', icon: <Grid size={18} />, label: 'Browse Products' },
+  { to: '/chat', icon: <MessagesSquare size={18} />, label: 'Live Chat' },
+  { to: '/notifications', icon: <Bell size={18} />, label: 'Notifications' },
+  { to: '/profile', icon: <User size={18} />, label: 'Profile' },
+]
+
+export default function Sidebar({ unreadCount = 0, cartCount = 0, onLogout, user }) {
+  const links = user?.role === 'admin' ? adminLinks : userLinks
   return (
     <aside style={{
       width: '240px', minHeight: '100vh',
@@ -52,6 +61,9 @@ export default function Sidebar({ unreadCount = 0, onLogout, user }) {
             {label}
             {label === 'Notifications' && unreadCount > 0 && (
               <span style={{ marginLeft: 'auto', background: '#d95f39', color: '#fff', borderRadius: '999px', padding: '2px 8px', fontSize: '0.72rem', fontWeight: 700 }}>{unreadCount}</span>
+            )}
+            {label === 'My Cart' && cartCount > 0 && (
+              <span style={{ marginLeft: 'auto', background: '#d95f39', color: '#fff', borderRadius: '999px', padding: '2px 8px', fontSize: '0.72rem', fontWeight: 700 }}>{cartCount}</span>
             )}
           </NavLink>
         ))}
