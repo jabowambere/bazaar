@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 
+const API = import.meta.env.VITE_API_URL || ''
+
 export default function ProductForm({ product, onClose, onSaved }) {
   const isEditing = Boolean(product)
   const [error, setError] = useState('')
@@ -26,7 +28,7 @@ export default function ProductForm({ product, onClose, onSaved }) {
 
     setLoading(true)
     try {
-      const url = isEditing ? `/products/${product._id}` : '/products'
+      const url = isEditing ? `${API}/products/${product._id}` : `${API}/products`
       const method = isEditing ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,

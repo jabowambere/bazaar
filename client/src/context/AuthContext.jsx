@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
+const API = import.meta.env.VITE_API_URL || ''
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -9,7 +10,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) { setLoading(false); return }
-    fetch('/auth/me', {
+    fetch(`${API}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
       credentials: 'include'
     })
@@ -20,7 +21,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function login(email, password) {
-    const res = await fetch('/auth/login', {
+    const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -34,7 +35,7 @@ export function AuthProvider({ children }) {
   }
 
   async function register(name, email, password) {
-    const res = await fetch('/auth/register', {
+    const res = await fetch(`${API}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -48,7 +49,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    await fetch('/auth/logout', { method: 'POST', credentials: 'include' })
+    await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' })
     localStorage.removeItem('token')
     setUser(null)
   }
