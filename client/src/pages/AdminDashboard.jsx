@@ -7,6 +7,9 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 function getToken() {
   return localStorage.getItem('token')
 }
@@ -19,7 +22,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
   const [confirm, setConfirm] = useState(null)
 
   useEffect(() => {
-    fetch('/users', { headers: { Authorization: `Bearer ${getToken()}` }, credentials: 'include' })
+    fetch(`${API}/users`, { headers: { Authorization: `Bearer ${getToken()}` }, credentials: 'include' })
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) setUsers(data)
@@ -38,7 +41,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
       onConfirm: async () => {
         setConfirm(null)
         try {
-          const res = await fetch(`/users/${user._id}`, {
+          const res = await fetch(`${API}/users/${user._id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()}` },
             credentials: 'include'
@@ -93,7 +96,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
               {products.slice(0, 6).map(p => (
                 <div key={p._id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0, overflow: 'hidden', background: 'linear-gradient(135deg, #d95f39, #9f3518)' }}>
-                    {p.productimage && <img src={p.productimage} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    {p.productimage && <img src={imgUrl(p.productimage)} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                   </div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <p style={{ margin: 0, color: '#fff8ef', fontSize: '0.88rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.productname}</p>
@@ -142,7 +145,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
                   <td style={{ padding: '14px 20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{ width: '38px', height: '38px', borderRadius: '10px', flexShrink: 0, overflow: 'hidden', background: 'linear-gradient(135deg, #d95f39, #9f3518)' }}>
-                        {p.productimage && <img src={p.productimage} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                        {p.productimage && <img src={imgUrl(p.productimage)} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                       </div>
                       <span style={{ color: '#fff8ef', fontSize: '0.9rem', fontWeight: 600 }}>{p.productname}</span>
                     </div>

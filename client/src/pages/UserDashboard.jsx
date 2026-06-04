@@ -6,6 +6,9 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 export default function UserDashboard({ products = [], user }) {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
@@ -59,7 +62,7 @@ export default function UserDashboard({ products = [], user }) {
             ) : recent.map(p => (
               <div key={p._id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ width: '42px', height: '42px', borderRadius: '10px', flexShrink: 0, overflow: 'hidden', background: 'linear-gradient(135deg, #d95f39, #9f3518)' }}>
-                  {p.productimage && <img src={p.productimage} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  {p.productimage && <img src={imgUrl(p.productimage)} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                 </div>
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <p style={{ margin: 0, color: '#fff8ef', fontSize: '0.88rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.productname}</p>
@@ -81,7 +84,7 @@ export default function UserDashboard({ products = [], user }) {
           {products.slice(0, 4).map(p => (
             <div key={p._id} style={{ borderRadius: '20px', overflow: 'hidden', background: 'rgba(255,250,242,0.07)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ height: '140px', background: 'linear-gradient(135deg, #d95f39, #9f3518)', overflow: 'hidden' }}>
-                {p.productimage && <img src={p.productimage} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                {p.productimage && <img src={imgUrl(p.productimage)} alt={p.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
               </div>
               <div style={{ padding: '14px' }}>
                 <p style={{ margin: '0 0 4px', color: '#fff8ef', fontWeight: 600, fontSize: '0.92rem' }}>{p.productname}</p>
