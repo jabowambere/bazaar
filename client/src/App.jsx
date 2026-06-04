@@ -155,16 +155,16 @@ function AppInner() {
 
   if (initialLoad || authLoading) {
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'grid', placeItems: 'center', background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(6px)' }}>
-        <div style={{ textAlign: 'center' }}>
-          <CupLoader />
-          {slowLoading && (
-            <p style={{ marginTop: '24px', color: '#9f3518', fontSize: '0.9rem', maxWidth: '280px' }}>
+      <>
+        <CupLoader fullScreen />
+        {slowLoading && (
+          <div style={{ position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, textAlign: 'center' }}>
+            <p style={{ color: '#9f3518', fontSize: '0.9rem', maxWidth: '280px', margin: 0 }}>
               Server is waking up... This may take 30-60 seconds on first load.
             </p>
-          )}
-        </div>
-      </div>
+          </div>
+        )}
+      </>
     )
   }
 

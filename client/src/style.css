@@ -887,11 +887,12 @@ h2 {
   height: 80px;
   position: relative;
   display: flex;
-  justify-items: center;
+  justify-content: center;
   align-items: center;
 }
 .cup-loader .cup {
   position: absolute;
+  left: 0;
   width: 25px;
   height: 18px;
   background-color: #fff;
