@@ -23,7 +23,7 @@ export default function Cart({ cart = { items: [] }, onRemove }) {
           <p style={{ color: '#6f665d', fontSize: '1rem', margin: 0 }}>Your cart is empty. Browse products and add some!</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }} className="cart-layout">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {items.map(item => (
               <div key={item._id} style={{
@@ -47,7 +47,7 @@ export default function Cart({ cart = { items: [] }, onRemove }) {
             ))}
           </div>
 
-          <div style={{ padding: '24px', borderRadius: '24px', background: '#fff', border: '1px solid rgba(0,0,0,0.08)', position: 'sticky', top: '24px' }}>
+          <div style={{ padding: '24px', borderRadius: '24px', background: '#fff', border: '1px solid rgba(0,0,0,0.08)', position: 'sticky', top: '24px' }} className="cart-summary">
             <p style={{ margin: '0 0 20px', fontWeight: 700, color: '#1a1815', fontSize: '1rem' }}>Order Summary</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
               {items.map(item => (

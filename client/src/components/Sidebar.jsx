@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Grid, Package, ShoppingCart, MessagesSquare, Bell, User, LogOut } from 'lucide-react'
+import { Home, Grid, Package, ShoppingCart, MessagesSquare, Bell, User, LogOut, Menu, X } from 'lucide-react'
+import { useState } from 'react'
 
 const userLinks = [
   { to: '/dashboard', icon: <Home size={18} />, label: 'Dashboard' },
@@ -21,8 +22,50 @@ const adminLinks = [
 
 export default function Sidebar({ unreadCount = 0, cartCount = 0, onLogout, user }) {
   const links = user?.role === 'admin' ? adminLinks : userLinks
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <aside style={{
+    <>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="mobile-menu-btn"
+        style={{
+          display: 'none',
+          position: 'fixed',
+          top: '16px',
+          left: '16px',
+          zIndex: 1001,
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          border: 'none',
+          background: 'linear-gradient(135deg, #d95f39, #9f3518)',
+          color: '#fff8ef',
+          cursor: 'pointer',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(159,53,24,0.3)',
+        }}
+      >
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 999,
+            display: 'none',
+          }}
+          className="mobile-overlay"
+        />
+      )}
+
+      <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`} style={{
       width: '240px', minHeight: '100vh',
       background: 'rgba(255,250,242,0.08)', backdropFilter: 'blur(20px)',
       borderRight: '1px solid rgba(255,255,255,0.1)',
@@ -49,7 +92,7 @@ export default function Sidebar({ unreadCount = 0, cartCount = 0, onLogout, user
 
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 12px' }}>
         {links.map(({ to, icon, label }) => (
-          <NavLink key={to} to={to} style={({ isActive }) => ({
+          <NavLink key={to} to={to} onClick={() => setIsOpen(false)} style={({ isActive }) => ({
             display: 'flex', alignItems: 'center', gap: '12px',
             padding: '12px 16px', borderRadius: '14px',
             color: isActive ? '#fff8ef' : 'rgba(255,248,239,0.55)',
@@ -77,5 +120,6 @@ export default function Sidebar({ unreadCount = 0, cartCount = 0, onLogout, user
         }}><LogOut size={16} /> Sign out</button>
       </div>
     </aside>
+    </>
   )
 }

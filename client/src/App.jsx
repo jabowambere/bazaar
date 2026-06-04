@@ -33,7 +33,13 @@ function AppInner() {
   const [confirm, setConfirm] = useState(null)
   const [pageLoading, setPageLoading] = useState(false)
   const [initialLoad, setInitialLoad] = useState(true)
+  const [slowLoading, setSlowLoading] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSlowLoading(true), 5000)
+    return () => clearTimeout(timer)
+  }, [])
 
   async function fetchAllProducts() {
     try {
@@ -148,7 +154,18 @@ function AppInner() {
   const unreadCount = 3
 
   if (initialLoad || authLoading) {
-    return <CupLoader fullScreen />
+    return (
+      <div style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'grid', placeItems: 'center', background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(6px)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <CupLoader />
+          {slowLoading && (
+            <p style={{ marginTop: '24px', color: '#9f3518', fontSize: '0.9rem', maxWidth: '280px' }}>
+              Server is waking up... This may take 30-60 seconds on first load.
+            </p>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return (
