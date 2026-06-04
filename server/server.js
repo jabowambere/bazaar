@@ -8,7 +8,20 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5000', process.env.CLIENT_ORIGIN].filter(Boolean), credentials: true }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'https://bazaar01.netlify.app',
+  process.env.CLIENT_ORIGIN
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
