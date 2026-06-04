@@ -6,6 +6,9 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 const categories = ['All', 'Electronics', 'Clothing', 'Shoes', 'Books', 'Furniture']
 
 export default function BrowseProducts({ products = [], loading, user, onAddToCart, onEdit, onDelete, isAdmin }) {
@@ -63,7 +66,7 @@ export default function BrowseProducts({ products = [], loading, user, onAddToCa
         ) : filtered.map(p => (
           <article key={p._id} className="product-card">
             <div className="product-image">
-              {p.productimage && <img src={p.productimage} alt={p.productname} />}
+              {p.productimage && <img src={imgUrl(p.productimage)} alt={p.productname} />}
             </div>
             <div className="product-content" style={{ color: '#1a1815' }}>
               <p className="product-tool" style={{ color: '#9f3518', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{p.productcategory}</p>

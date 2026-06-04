@@ -2,13 +2,16 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 export default function ProductCard({ product, index, onEdit, onDelete }) {
   return (
     <article className="product-card">
       {index === 0 && <span className="product-badge">Featured</span>}
       <div className="product-image">
         {product.productimage && (
-          <img src={product.productimage} alt={product.productname} />
+          <img src={imgUrl(product.productimage)} alt={product.productname} />
         )}
       </div>
       <div className="product-content" style={{ color: '#000' }}>

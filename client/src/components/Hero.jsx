@@ -4,6 +4,9 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 function FeaturedPanel({ product }) {
   if (!product) {
     return (
@@ -35,7 +38,7 @@ function FeaturedPanel({ product }) {
         {product.productimage ? (
           <>
             <span className="art-card">{product.productcategory || 'Category'}</span>
-            <img src={product.productimage} alt={product.productname} />
+            <img src={imgUrl(product.productimage)} alt={product.productname} />
           </>
         ) : (
           <>

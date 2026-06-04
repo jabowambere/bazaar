@@ -11,11 +11,14 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 function PublicProductCard({ product, onCartClick }) {
   return (
     <article className="product-card">
       <div className="product-image">
-        {product.productimage && <img src={product.productimage} alt={product.productname} />}
+        {product.productimage && <img src={imgUrl(product.productimage)} alt={product.productname} />}
       </div>
       <div className="product-content" style={{ color: '#000' }}>
         <p className="product-tool" style={{ color: '#000' }}>{product.productcategory || 'Uncategorized'}</p>

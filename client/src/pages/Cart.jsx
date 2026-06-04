@@ -4,6 +4,9 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
+const API = import.meta.env.VITE_API_URL || ''
+function imgUrl(src) { return src ? `${API}${src}` : '' }
+
 export default function Cart({ cart = { items: [] }, onRemove }) {
   const items = cart.items || []
   const total = items.reduce((s, i) => s + ((i.product?.productprice || 0) * (i.quantity || 1)), 0)
@@ -28,7 +31,7 @@ export default function Cart({ cart = { items: [] }, onRemove }) {
                 borderRadius: '20px', background: '#fff', border: '1px solid rgba(0,0,0,0.08)',
               }}>
                 <div style={{ width: '72px', height: '72px', borderRadius: '14px', flexShrink: 0, overflow: 'hidden', background: 'linear-gradient(135deg, #d95f39, #9f3518)' }}>
-                  {item.product?.productimage && <img src={item.product.productimage} alt={item.product.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  {item.product?.productimage && <img src={imgUrl(item.product.productimage)} alt={item.product.productname} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: '0 0 4px', color: '#1a1815', fontWeight: 600 }}>{item.product?.productname}</p>
