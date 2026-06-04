@@ -21,7 +21,7 @@ function getToken() { return localStorage.getItem('token') }
 const API = import.meta.env.VITE_API_URL || ''
 
 function AppInner() {
-  const { user, logout } = useAuth()
+  const { user, logout, loading: authLoading } = useAuth()
   const [allProducts, setAllProducts] = useState([])
   const [myProducts, setMyProducts] = useState([])
   const [cart, setCart] = useState({ items: [] })
@@ -32,6 +32,7 @@ function AppInner() {
   const [showAuth, setShowAuth] = useState(false)
   const [confirm, setConfirm] = useState(null)
   const [pageLoading, setPageLoading] = useState(false)
+  const [initialLoad, setInitialLoad] = useState(true)
   const navigate = useNavigate()
 
   async function fetchAllProducts() {
@@ -67,7 +68,10 @@ function AppInner() {
   }
 
   useEffect(() => {
-    fetchAllProducts().finally(() => setLoading(false))
+    fetchAllProducts().finally(() => {
+      setLoading(false)
+      setTimeout(() => setInitialLoad(false), 800)
+    })
   }, [])
 
   useEffect(() => {
@@ -142,6 +146,10 @@ function AppInner() {
 
   const cartCount = cart?.items?.length || 0
   const unreadCount = 3
+
+  if (initialLoad || authLoading) {
+    return <CupLoader fullScreen />
+  }
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
