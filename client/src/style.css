@@ -1008,3 +1008,25 @@ h2 {
     position: static !important;
   }
 }
+
+
+/* Chat Mobile */
+@media (max-width: 768px) {
+  .chat-container {
+    height: calc(100vh - 160px) !important;
+  }
+  
+  .chat-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+  
+  .chat-messages {
+    padding: 16px !important;
+  }
+  
+  .message-bubble {
+    max-width: 80% !important;
+  }
+}

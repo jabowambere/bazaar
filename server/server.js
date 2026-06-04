@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const http = require('http');
+const { Server } = require('socket.io');
+const initSocket = require('./socket');
 
 dotenv.config();
 const app = express();
@@ -14,6 +17,14 @@ const allowedOrigins = [
   'https://bazaar01.netlify.app',
   process.env.CLIENT_ORIGIN
 ].filter(Boolean);
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true
+  }
+});
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -32,6 +43,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/products', require('./routes/products'));
 app.use('/users', require('./routes/users'));
 app.use('/cart', require('./routes/cart'));
+app.use('/messages', require('./routes/messages'));
 
 app.use((err, req, res, next) => {
   console.error(err);
@@ -41,7 +53,8 @@ app.use((err, req, res, next) => {
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
-    app.listen(process.env.PORT, () => {
+    initSocket(io);
+    server.listen(process.env.PORT, () => {
       console.log(`Server running on port ${process.env.PORT}`);
     });
   })
