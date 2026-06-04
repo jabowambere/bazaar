@@ -4,6 +4,7 @@ import NewsletterSection from '../components/NewsletterSection'
 import Footer from '../components/Footer'
 import Topbar from '../components/Topbar'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { ShoppingCart } from 'lucide-react'
 import { useState } from 'react'
 
 function formatCurrency(value) {
@@ -26,7 +27,7 @@ function PublicProductCard({ product, onCartClick }) {
         </div>
         <div className="product-actions">
           <button className="solid-button" type="button" onClick={onCartClick} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            🛒 Add to Cart
+            <ShoppingCart size={16} /> Add to Cart
           </button>
         </div>
       </div>
