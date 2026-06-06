@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
@@ -8,13 +8,15 @@ const API = import.meta.env.VITE_API_URL || ''
 function imgUrl(src) { return src ? `${API}${src}` : '' }
 
 function FeaturedPanel({ product }) {
+  const [expanded, setExpanded] = useState(false)
+
   if (!product) {
     return (
       <div className="feature-panel">
         <div className="feature-glow"></div>
         <p className="panel-label">Featured Drop</p>
         <h2>Your next hero product</h2>
-        <p style={{color:'#9f3518'}}className="panel-text">Add a product and it will automatically appear as the featured item here.</p>
+        <p style={{color:'#9f3518'}} className="panel-text">Add a product and it will automatically appear as the featured item here.</p>
         <div className="feature-art">
           <span className="art-orb art-orb-one"></span>
           <span className="art-orb art-orb-two"></span>
@@ -28,13 +30,25 @@ function FeaturedPanel({ product }) {
     )
   }
 
+  const description = product.productdescription || ''
+  const isLong = description.length > 80
+  const displayDesc = isLong && !expanded ? description.slice(0, 80) + '...' : description
+
   return (
-    <div className="feature-panel">
+    <div className="feature-panel" style={{ minHeight: 'auto', padding: '22px' }}>
       <div className="feature-glow"></div>
       <p className="panel-label">Featured Drop</p>
-      <h2>{product.productname}</h2>
-      <p className="panel-text" style={{color:'#9f3518'}}>{product.productdescription || 'No description yet for this product.'}</p>
-      <div className={`feature-art${product.productimage ? ' has-image' : ''}`}>
+      <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', marginBottom: '8px' }}>{product.productname}</h2>
+      <p className="panel-text" style={{ color: '#9f3518', fontSize: '0.88rem', maxWidth: '100%', marginBottom: '4px' }}>
+        {displayDesc || 'No description yet.'}
+        {isLong && (
+          <button onClick={() => setExpanded(!expanded)} style={{
+            background: 'none', border: 'none', color: '#d95f39', cursor: 'pointer',
+            fontWeight: 700, fontSize: '0.85rem', padding: '0 4px'
+          }}>{expanded ? 'less' : 'more'}</button>
+        )}
+      </p>
+      <div className={`feature-art${product.productimage ? ' has-image' : ''}`} style={{ minHeight: '140px', margin: '16px 0' }}>
         {product.productimage ? (
           <>
             <span className="art-card">{product.productcategory || 'Category'}</span>
@@ -58,6 +72,20 @@ function FeaturedPanel({ product }) {
 
 export default function Hero({ products, activeCategory, onCategoryChange, onSearch }) {
   const [searchValue, setSearchValue] = useState('')
+  const [featuredIndex, setFeaturedIndex] = useState(0)
+  const [fade, setFade] = useState(true)
+
+  useEffect(() => {
+    if (products.length <= 1) return
+    const interval = setInterval(() => {
+      setFade(false)
+      setTimeout(() => {
+        setFeaturedIndex(prev => (prev + 1) % products.length)
+        setFade(true)
+      }, 400)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [products.length])
 
   const categories = [...new Set(
     products.map(p => (p.productcategory || '').trim()).filter(Boolean)
@@ -77,7 +105,6 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
   return (
     <section className="hero">
       <div className="hero-copy">
-        <p className="eyebrow">Membership Template</p>
         <h1>Meet the new home for your digital goods.</h1>
         <p className="hero-text">
           Sell premium assets, build a collector community, and turn every release into
@@ -129,8 +156,8 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
         </div>
       </div>
 
-      <aside className="hero-feature">
-        <FeaturedPanel product={products[0] || null} />
+      <aside className="hero-feature" style={{ transition: 'opacity 0.4s ease', opacity: fade ? 1 : 0 }}>
+        <FeaturedPanel product={products[featuredIndex] || null} />
       </aside>
     </section>
   )
