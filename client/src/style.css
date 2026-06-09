@@ -1145,3 +1145,51 @@ h2 {
     min-width: 600px;
   }
 }
+
+/* ── Landing page entrance animations ── */
+@keyframes lp-word-up {
+  from { opacity: 0; transform: translateY(60%) skewY(4deg); }
+  to   { opacity: 1; transform: translateY(0)   skewY(0deg); }
+}
+@keyframes lp-slide-left {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes lp-slide-right {
+  from { opacity: 0; transform: translateX(48px) scale(0.97); }
+  to   { opacity: 1; transform: translateX(0)   scale(1); }
+}
+@keyframes lp-scale-in {
+  from { opacity: 0; transform: scaleX(0.94) scaleY(0.92); }
+  to   { opacity: 1; transform: scaleX(1)    scaleY(1); }
+}
+@keyframes lp-pop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(8px); }
+  68%  { transform: scale(1.08) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes lp-card-reveal {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes lp-blur-in {
+  from { opacity: 0; transform: scale(0.97); filter: blur(8px); }
+  to   { opacity: 1; transform: scale(1);    filter: blur(0px); }
+}
+
+.lp-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.lp-word span {
+  display: inline-block;
+  opacity: 0;
+  animation: lp-word-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.lp-slide-left  { opacity: 0; animation: lp-slide-left  1s   cubic-bezier(0.16,1,0.3,1) forwards; }
+.lp-slide-right { opacity: 0; animation: lp-slide-right 1.1s cubic-bezier(0.16,1,0.3,1) forwards; }
+.lp-scale-in    { opacity: 0; animation: lp-scale-in    0.9s cubic-bezier(0.16,1,0.3,1) forwards; }
+.lp-pop         { opacity: 0; animation: lp-pop         0.85s cubic-bezier(0.16,1,0.3,1) forwards; }
+.lp-card-reveal { opacity: 0; animation: lp-card-reveal 0.95s cubic-bezier(0.16,1,0.3,1) forwards; }
+.lp-blur-in     { opacity: 0; animation: lp-blur-in     1.1s  cubic-bezier(0.16,1,0.3,1) forwards; }

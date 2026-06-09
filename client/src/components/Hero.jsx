@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react'
 import { imgUrl } from '../utils/imgUrl'
 import logo from '../assets/bazaar.png'
+import useReveal from './FadeIn'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
+}
+
+function WordReveal({ text, baseDelay = 0 }) {
+  const [ref, visible] = useReveal(0.05)
+  const words = text.split(' ')
+  return (
+    <h1 ref={ref}>
+      {words.map((word, i) => (
+        <span key={i} className="lp-word">
+          <span style={visible ? { animationDelay: `${baseDelay + i * 0.11}s` } : { opacity: 0 }}>
+            {word}{i < words.length - 1 ? '\u00a0' : ''}
+          </span>
+        </span>
+      ))}
+    </h1>
+  )
 }
 
 function FeaturedPanel({ product }) {
@@ -73,6 +90,8 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
   const [searchValue, setSearchValue] = useState('')
   const [featuredIndex, setFeaturedIndex] = useState(0)
   const [fade, setFade] = useState(true)
+  const [copyRef, copyVisible] = useReveal(0.05)
+  const [asideRef, asideVisible] = useReveal(0.05)
 
   useEffect(() => {
     if (products.length <= 1) return
@@ -103,14 +122,31 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
 
   return (
     <section className="hero">
-      <div className="hero-copy">
-        <h1>Meet the new home for your digital goods.</h1>
-        <p className="hero-text">
+      <div className="hero-copy" ref={copyRef}>
+        {/* eyebrow slides in from left */}
+        <p className="eyebrow lp-slide-left" style={copyVisible ? { animationDelay: '0s' } : { opacity: 0, animation: 'none' }}>
+          The new standard
+        </p>
+
+        {/* h1 words reveal upward one by one */}
+        <WordReveal text="Meet the new home for your digital goods." baseDelay={0.05} />
+
+        {/* body text slides in from left */}
+        <p
+          className={`hero-text${copyVisible ? ' lp-slide-left' : ''}`}
+          style={copyVisible ? { animationDelay: '0.55s' } : { opacity: 0 }}
+        >
           Sell premium assets, build a collector community, and turn every release into
           an event with a storefront that feels editorial instead of ordinary.
         </p>
 
-        <form className="search-card" role="search" onSubmit={handleSearch}>
+        {/* search scales in */}
+        <form
+          className={`search-card${copyVisible ? ' lp-scale-in' : ''}`}
+          style={copyVisible ? { animationDelay: '0.7s' } : { opacity: 0 }}
+          role="search"
+          onSubmit={handleSearch}
+        >
           <label className="sr-only" htmlFor="search">Search assets</label>
           <img src={logo} alt="Bazaar" style={{ width: '32px', height: '32px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0, margin: '0 4px 0 2px' }} />
           <input
@@ -123,40 +159,47 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
           <button type="submit">Search</button>
         </form>
 
+        {/* filter pills pop in one by one */}
         <div className="filter-row" aria-label="Category filters">
-          <button
-            className={`filter-pill${activeCategory === 'all' ? ' active' : ''}`}
-            type="button"
-            onClick={() => onCategoryChange('all')}
-          >All</button>
-          {categories.map(cat => (
+          {['all', ...categories].map((cat, i) => (
             <button
-              style={{color: '#9f3518'}}
               key={cat}
-              className={`filter-pill${activeCategory === cat.toLowerCase() ? ' active' : ''}`}
+              className={`filter-pill${activeCategory === (cat === 'all' ? 'all' : cat.toLowerCase()) ? ' active' : ''}${copyVisible ? ' lp-pop' : ''}`}
+              style={copyVisible ? { animationDelay: `${0.85 + i * 0.08}s`, color: cat !== 'all' ? '#9f3518' : undefined } : { opacity: 0 }}
               type="button"
-              onClick={() => onCategoryChange(cat.toLowerCase())}
-            >{cat}</button>
+              onClick={() => onCategoryChange(cat === 'all' ? 'all' : cat.toLowerCase())}
+            >{cat === 'all' ? 'All' : cat}</button>
           ))}
         </div>
 
+        {/* stats slide in from left, staggered */}
         <div className="hero-stats">
-          <article>
-            <strong style={{color: '#9f3518'}}>{products.length}</strong>
-            <span>Products loaded</span>
-          </article>
-          <article>
-            <strong style={{color: '#9f3518'}}>{uniqueCategories.size}</strong>
-            <span>Categories in catalog</span>
-          </article>
-          <article>
-            <strong style={{color: '#9f3518'}}>{formatCurrency(avgPrice)}</strong>
-            <span>Average price</span>
-          </article>
+          {[
+            { value: products.length, label: 'Products loaded' },
+            { value: uniqueCategories.size, label: 'Categories in catalog' },
+            { value: formatCurrency(avgPrice), label: 'Average price' },
+          ].map(({ value, label }, i) => (
+            <article
+              key={label}
+              className={copyVisible ? 'lp-slide-left' : ''}
+              style={copyVisible ? { animationDelay: `${1.0 + i * 0.13}s` } : { opacity: 0 }}
+            >
+              <strong style={{color: '#9f3518'}}>{value}</strong>
+              <span>{label}</span>
+            </article>
+          ))}
         </div>
       </div>
 
-      <aside className="hero-feature hero-feature-aside" style={{ transition: 'opacity 0.4s ease', opacity: fade ? 1 : 0 }}>
+      {/* featured panel slides in from the right */}
+      <aside
+        ref={asideRef}
+        className={`hero-feature hero-feature-aside${asideVisible ? ' lp-slide-right' : ''}`}
+        style={asideVisible
+          ? { animationDelay: '0.3s', opacity: fade ? undefined : 0, transition: 'opacity 0.4s ease' }
+          : { opacity: 0 }
+        }
+      >
         <FeaturedPanel product={products[featuredIndex] || null} />
       </aside>
     </section>

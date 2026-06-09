@@ -5,6 +5,7 @@ import FAQSection from '../components/FAQSection'
 import Footer from '../components/Footer'
 import Topbar from '../components/Topbar'
 import LoadingSpinner from '../components/LoadingSpinner'
+import useReveal from '../components/FadeIn'
 import { ShoppingCart } from 'lucide-react'
 import { useState } from 'react'
 import { imgUrl } from '../utils/imgUrl'
@@ -13,9 +14,14 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
-function PublicProductCard({ product, onCartClick }) {
+function PublicProductCard({ product, onCartClick, animClass, animDelay }) {
+  const [ref, visible] = useReveal()
   return (
-    <article className="product-card">
+    <article
+      ref={ref}
+      className={`product-card${visible ? ` ${animClass}` : ''}`}
+      style={visible ? { animationDelay: animDelay } : { opacity: 0 }}
+    >
       <div className="product-image">
         {product.productimage && <img src={imgUrl(product.productimage)} alt={product.productname} />}
       </div>
@@ -40,6 +46,7 @@ function PublicProductCard({ product, onCartClick }) {
 export default function LandingPage({ products, loading, onLoginClick, onSignupClick }) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [headingRef, headingVisible] = useReveal()
 
   const filtered = products.filter(p => {
     const matchCat = activeCategory === 'all' || (p.productcategory || '').trim().toLowerCase() === activeCategory
@@ -59,7 +66,11 @@ export default function LandingPage({ products, loading, onLoginClick, onSignupC
         />
 
         <section className="products-section" id="explore">
-          <div className="section-heading">
+          <div
+            ref={headingRef}
+            className={`section-heading${headingVisible ? ' lp-slide-left' : ''}`}
+            style={headingVisible ? { animationDelay: '0s' } : { opacity: 0 }}
+          >
             <div>
               <p className="eyebrow">Explore</p>
               <h2>Curated assets with a collector-shop feel.</h2>
@@ -71,8 +82,14 @@ export default function LandingPage({ products, loading, onLoginClick, onSignupC
                 <h3>No products yet</h3>
                 <p>Check back soon.</p>
               </article>
-            ) : filtered.map(p => (
-              <PublicProductCard key={p._id} product={p} onCartClick={onLoginClick} />
+            ) : filtered.map((p, i) => (
+              <PublicProductCard
+                key={p._id}
+                product={p}
+                onCartClick={onLoginClick}
+                animClass="lp-card-reveal"
+                animDelay={`${(i % 4) * 0.13}s`}
+              />
             ))}
           </div>
         </section>
