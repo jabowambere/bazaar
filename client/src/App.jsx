@@ -30,6 +30,7 @@ function AppInner() {
   const [successMessage, setSuccessMessage] = useState(null)
   const [modalProduct, setModalProduct] = useState(undefined)
   const [showAuth, setShowAuth] = useState(false)
+  const [authMode, setAuthMode] = useState('login')
   const [confirm, setConfirm] = useState(null)
   const [pageLoading, setPageLoading] = useState(false)
   const [initialLoad, setInitialLoad] = useState(true)
@@ -178,7 +179,7 @@ function AppInner() {
         <Routes>
           <Route path="/" element={
             user ? <Navigate to="/dashboard" replace /> :
-            <LandingPage products={allProducts} loading={loading} onLoginClick={() => setShowAuth(true)} />
+            <LandingPage products={allProducts} loading={loading} onLoginClick={() => { setAuthMode('login'); setShowAuth(true) }} onSignupClick={() => { setAuthMode('register'); setShowAuth(true) }} />
           } />
 
           <Route path="/*" element={
@@ -212,7 +213,7 @@ function AppInner() {
         </Routes>
       </div>
 
-      {showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={handleAuthSuccess} />}
+      {showAuth && <AuthModal initialMode={authMode} onClose={() => setShowAuth(false)} onSuccess={handleAuthSuccess} />}
 
       {modalProduct !== undefined && (
         <ProductModal

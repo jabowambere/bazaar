@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import CupLoader from './CupLoader'
 
-export default function AuthModal({ onClose, onSuccess }) {
-  const [mode, setMode] = useState('login')
+export default function AuthModal({ onClose, onSuccess, initialMode = 'login' }) {
+  const [mode, setMode] = useState(initialMode)
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)

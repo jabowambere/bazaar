@@ -1,6 +1,6 @@
 import logo from '../assets/bazaar.png'
 
-export default function Topbar({ onAddProduct, onLoginClick }) {
+export default function Topbar({ onAddProduct, onLoginClick, onSignupClick }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', padding: '18px 0' }}>
       <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
@@ -9,9 +9,10 @@ export default function Topbar({ onAddProduct, onLoginClick }) {
       </a>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <a href="#explore" className="ghost-button">Explore</a>
+        <a href="#faq" className="ghost-button">FAQ</a>
         <a href="#newsletter" className="ghost-button">Updates</a>
         <button className="ghost-button" type="button" onClick={onLoginClick}>Sign In</button>
-        <button className="solid-button" type="button" onClick={onLoginClick}>Get Started</button>
+        <button className="solid-button" type="button" onClick={onSignupClick}>Get Started</button>
       </div>
     </div>
   )

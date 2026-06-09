@@ -1,6 +1,7 @@
 import Hero from '../components/Hero'
 import MembershipSection from '../components/MembershipSection'
 import NewsletterSection from '../components/NewsletterSection'
+import FAQSection from '../components/FAQSection'
 import Footer from '../components/Footer'
 import Topbar from '../components/Topbar'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -36,7 +37,7 @@ function PublicProductCard({ product, onCartClick }) {
   )
 }
 
-export default function LandingPage({ products, loading, onLoginClick }) {
+export default function LandingPage({ products, loading, onLoginClick, onSignupClick }) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -48,7 +49,7 @@ export default function LandingPage({ products, loading, onLoginClick }) {
 
   return (
     <div className="page-shell">
-      <Topbar onAddProduct={onLoginClick} onLoginClick={onLoginClick} />
+      <Topbar onAddProduct={onLoginClick} onLoginClick={onLoginClick} onSignupClick={onSignupClick} />
       <main>
         <Hero
           products={products}
@@ -78,6 +79,7 @@ export default function LandingPage({ products, loading, onLoginClick }) {
 
         <MembershipSection />
         <NewsletterSection />
+        <FAQSection />
       </main>
       <Footer />
     </div>
