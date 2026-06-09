@@ -1,5 +1,6 @@
 import { Preview } from 'shaders/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { io } from 'socket.io-client'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Sidebar from './components/Sidebar'
@@ -25,6 +26,8 @@ function AppInner() {
   const [allProducts, setAllProducts] = useState([])
   const [myProducts, setMyProducts] = useState([])
   const [cart, setCart] = useState({ items: [] })
+  const [notifications, setNotifications] = useState([])
+  const socketRef = useRef(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
@@ -36,6 +39,26 @@ function AppInner() {
   const [initialLoad, setInitialLoad] = useState(true)
   const [slowLoading, setSlowLoading] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!user) return;
+    const token = getToken();
+    const socket = io(API || window.location.origin, { auth: { token }, reconnection: true });
+    socketRef.current = socket;
+    const doJoin = () => socket.emit('join', token);
+    socket.on('connect', doJoin);
+    socket.on('productActivity', ({ action, productName, by }) => {
+      const icons = { added: '＋', updated: '✎', deleted: '🗑' };
+      setNotifications(prev => [{
+        id: Date.now(),
+        text: `${by} ${action} "${productName}"`,
+        time: 'just now',
+        read: false,
+        icon: icons[action]
+      }, ...prev]);
+    });
+    return () => socket.disconnect();
+  }, [user])
 
   useEffect(() => {
     const timer = setTimeout(() => setSlowLoading(true), 5000)
@@ -152,7 +175,7 @@ function AppInner() {
   }
 
   const cartCount = cart?.items?.length || 0
-  const unreadCount = 3
+  const unreadCount = notifications.filter(n => !n.read).length
 
   if (initialLoad || authLoading) {
     return (
@@ -203,7 +226,7 @@ function AppInner() {
                     <Route path="/my-products" element={<MyProducts products={myProducts} loading={loading} onAdd={() => setModalProduct(null)} onEdit={setModalProduct} onDelete={handleDelete} />} />
                     <Route path="/cart" element={<Cart cart={cart} onRemove={handleRemoveFromCart} />} />
                     <Route path="/chat" element={<Chat />} />
-                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/notifications" element={<Notifications notifications={notifications} setNotifications={setNotifications} />} />
                     <Route path="/profile" element={<Profile user={user} />} />
                   </Routes>
                 </main>

@@ -40,7 +40,8 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use('/api', require('./routes/api'));
 app.use('/auth', require('./routes/auth'));
-app.use('/products', require('./routes/products'));
+const productsRouter = require('./routes/products');
+app.use('/products', productsRouter);
 app.use('/users', require('./routes/users'));
 app.use('/cart', require('./routes/cart'));
 app.use('/messages', require('./routes/messages'));
@@ -54,6 +55,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
     initSocket(io);
+    productsRouter.setIo(io);
     server.listen(process.env.PORT, () => {
       console.log(`Server running on port ${process.env.PORT}`);
     });
