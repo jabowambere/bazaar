@@ -26,8 +26,16 @@ function AppInner() {
   const [allProducts, setAllProducts] = useState([])
   const [myProducts, setMyProducts] = useState([])
   const [cart, setCart] = useState({ items: [] })
-  const [notifications, setNotifications] = useState([])
+  const [notifications, setNotificationsRaw] = useState([])
   const socketRef = useRef(null)
+
+  function setNotifications(updater) {
+    setNotificationsRaw(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater
+      if (user) localStorage.setItem(`notifications_${user._id}`, JSON.stringify(next))
+      return next
+    })
+  }
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
@@ -42,6 +50,8 @@ function AppInner() {
 
   useEffect(() => {
     if (!user) return;
+    const stored = localStorage.getItem(`notifications_${user._id}`)
+    if (stored) setNotificationsRaw(JSON.parse(stored))
     const token = getToken();
     const socket = io(API || window.location.origin, { auth: { token }, reconnection: true });
     socketRef.current = socket;
@@ -172,6 +182,7 @@ function AppInner() {
   async function handleLogout() {
     setPageLoading(true)
     await logout()
+    setNotificationsRaw([])
     setPageLoading(false)
   }
 
