@@ -169,6 +169,12 @@ function AppInner() {
     })
   }
 
+  async function handleLogout() {
+    setPageLoading(true)
+    await logout()
+    setPageLoading(false)
+  }
+
   function handleAuthSuccess() {
     setShowAuth(false)
     navigate('/dashboard')
@@ -208,7 +214,7 @@ function AppInner() {
           <Route path="/*" element={
             <ProtectedRoute>
               <div style={{ display: 'flex', minHeight: '100vh' }}>
-                <Sidebar unreadCount={unreadCount} cartCount={cartCount} onLogout={logout} user={user} />
+                <Sidebar unreadCount={unreadCount} cartCount={cartCount} onLogout={handleLogout} user={user} />
                 <main style={{ marginLeft: '240px', flex: 1, padding: '40px', minHeight: '100vh', background: '#000000', boxSizing: 'border-box' }}>
                   {successMessage && (
                     <div style={{ marginBottom: '16px', padding: '14px 18px', borderRadius: '18px', background: 'rgba(221,242,226,0.9)', color: '#9f3518', border: '1px solid rgba(159,53,24,0.2)' }}>
