@@ -7,8 +7,11 @@ const onlineUsers = new Map();
 function initSocket(io) {
   console.log('Socket.io initialized');
   io.broadcastActivity = (actorUserId, event, data) => {
-    for (const [userId, { socketId }] of onlineUsers) {
-      if (userId !== actorUserId) io.to(socketId).emit(event, data);
+    const actor = onlineUsers.get(actorUserId);
+    if (actor) {
+      io.except(actor.socketId).emit(event, data);
+    } else {
+      io.emit(event, data);
     }
   };
 

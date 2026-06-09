@@ -17,6 +17,7 @@ export default defineConfig({
       '/auth': 'http://localhost:5000',
       '/users': 'http://localhost:5000',
       '/cart': 'http://localhost:5000',
+      '/socket.io': { target: 'http://localhost:5000', ws: true },
     }
   }
 })
