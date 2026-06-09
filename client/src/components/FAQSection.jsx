@@ -28,7 +28,7 @@ const faqs = [
   },
   {
     q: 'Is there a mobile app?',
-    a: 'Not yet, but the platform is fully mobile-responsive and works seamlessly on all screen sizes and devices.'
+    a: 'Not yet. The platform is still being optimized for mobile and may not display perfectly on all screen sizes, but a fully responsive experience is actively being worked on.'
   },
 ]
 
