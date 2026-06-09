@@ -51,7 +51,7 @@ router.post('/', protect, upload.single('productimage'), async (req, res) => {
     });
     const saved = await product.save();
     await saved.populate('owner', 'name');
-    _io?.emit('productActivity', { action: 'added', productName: saved.productname, by: req.user.name });
+    _io?.broadcastActivity(req.user._id.toString(), 'productActivity', { action: 'added', productName: saved.productname, by: req.user.name });
     res.status(201).json(saved);
   } catch (err) {
     if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
@@ -72,7 +72,7 @@ router.put('/:id', protect, upload.single('productimage'), async (req, res) => {
       updateData.productimage = req.file.path;
     }
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
-    _io?.emit('productActivity', { action: 'updated', productName: updated.productname, by: req.user.name });
+    _io?.broadcastActivity(req.user._id.toString(), 'productActivity', { action: 'updated', productName: updated.productname, by: req.user.name });
     res.status(200).json(updated);
   } catch (err) {
     if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
@@ -89,7 +89,7 @@ router.delete('/:id', protect, async (req, res) => {
     const oldId = getPublicId(product.productimage);
     if (oldId) await cloudinary.uploader.destroy(oldId).catch(() => {});
     await Product.findByIdAndDelete(req.params.id);
-    _io?.emit('productActivity', { action: 'deleted', productName: product.productname, by: req.user.name });
+    _io?.broadcastActivity(req.user._id.toString(), 'productActivity', { action: 'deleted', productName: product.productname, by: req.user.name });
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Deleting product failed', error: err.message });

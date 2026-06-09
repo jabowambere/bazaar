@@ -6,7 +6,12 @@ const onlineUsers = new Map();
 
 function initSocket(io) {
   console.log('Socket.io initialized');
-  
+  io.broadcastActivity = (actorUserId, event, data) => {
+    for (const [userId, { socketId }] of onlineUsers) {
+      if (userId !== actorUserId) io.to(socketId).emit(event, data);
+    }
+  };
+
   io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 

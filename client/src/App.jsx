@@ -53,19 +53,18 @@ function AppInner() {
     const stored = localStorage.getItem(`notifications_${user._id}`)
     if (stored) setNotificationsRaw(JSON.parse(stored))
     const token = getToken();
-    const socket = io(API || window.location.origin, { auth: { token }, reconnection: true });
+    const socket = io(API || window.location.origin, { auth: { token }, reconnection: true, transports: ['websocket', 'polling'] });
     socketRef.current = socket;
     const doJoin = () => socket.emit('join', token);
     socket.on('connect', doJoin);
     socket.on('productActivity', ({ action, productName, by }) => {
       const icons = { added: '＋', updated: '✎', deleted: '🗑' };
-      setNotifications(prev => [{
-        id: Date.now(),
-        text: `${by} ${action} "${productName}"`,
-        time: 'just now',
-        read: false,
-        icon: icons[action]
-      }, ...prev]);
+      const entry = { id: Date.now(), text: `${by} ${action} "${productName}"`, time: 'just now', read: false, icon: icons[action] };
+      setNotificationsRaw(prev => {
+        const next = [entry, ...prev];
+        localStorage.setItem(`notifications_${user._id}`, JSON.stringify(next));
+        return next;
+      });
     });
     return () => socket.disconnect();
   }, [user])
