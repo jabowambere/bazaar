@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react'
 import { Package, Users, LayoutGrid, DollarSign, Trash2 } from 'lucide-react'
 import StatCard from '../components/StatCard'
 import ConfirmModal from '../components/ConfirmModal'
+import { imgUrl } from '../utils/imgUrl'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
-
-const API = import.meta.env.VITE_API_URL || ''
-function imgUrl(src) { return src ? `${API}${src}` : '' }
 
 function getToken() {
   return localStorage.getItem('token')

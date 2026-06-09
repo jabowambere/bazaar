@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { ShoppingCart, Pencil, Trash2 } from 'lucide-react'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { imgUrl } from '../utils/imgUrl'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
-
-const API = import.meta.env.VITE_API_URL || ''
-function imgUrl(src) { return src ? `${API}${src}` : '' }
 
 const categories = ['All', 'Electronics', 'Clothing', 'Shoes', 'Books', 'Furniture']
 

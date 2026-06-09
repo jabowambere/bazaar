@@ -1,27 +1,16 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const { upload, cloudinary } = require('../cloudinary');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '../uploads/')),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
-    if (allowed.test(path.extname(file.originalname).toLowerCase()) && allowed.test(file.mimetype))
-      return cb(null, true);
-    cb(new Error('Only jpeg, jpg, png, webp images are allowed'));
-  }
-});
+const getPublicId = (url) => {
+  if (!url || url.startsWith('/uploads')) return null;
+  const parts = url.split('/');
+  const file = parts[parts.length - 1].split('.')[0];
+  return `producthub/${file}`;
+};
 
 // GET all products
 router.get('/products', async (req, res) => {
@@ -33,15 +22,15 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// POST create product (uses a default/guest owner)
+// POST create product
 router.post('/products', upload.single('productimage'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'Please upload an image' });
     let owner = await User.findOne({ role: 'admin' });
-    if (!owner) return res.status(500).json({ message: 'No admin user found to assign as owner' });
+    if (!owner) return res.status(500).json({ message: 'No admin user found' });
     const product = new Product({
       ...req.body,
-      productimage: `/uploads/${req.file.filename}`,
+      productimage: req.file.path,
       owner: owner._id
     });
     const saved = await product.save();
@@ -59,7 +48,11 @@ router.put('/products/:id', upload.single('productimage'), async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
     const updateData = { ...req.body };
-    if (req.file) updateData.productimage = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      const oldId = getPublicId(product.productimage);
+      if (oldId) await cloudinary.uploader.destroy(oldId).catch(() => {});
+      updateData.productimage = req.file.path;
+    }
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     res.status(200).json(updated);
   } catch (err) {
@@ -73,6 +66,8 @@ router.delete('/products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
+    const oldId = getPublicId(product.productimage);
+    if (oldId) await cloudinary.uploader.destroy(oldId).catch(() => {});
     await Product.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch {

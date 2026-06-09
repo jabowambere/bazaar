@@ -1,11 +1,9 @@
 import { Trash2 } from 'lucide-react'
+import { imgUrl } from '../utils/imgUrl'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
-
-const API = import.meta.env.VITE_API_URL || ''
-function imgUrl(src) { return src ? `${API}${src}` : '' }
 
 export default function Cart({ cart = { items: [] }, onRemove }) {
   const items = cart.items || []
