@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Home, Grid, Package, ShoppingCart, MessagesSquare, Bell, User, LogOut, Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import logo from '../assets/bazaar.png'
 
 const userLinks = [
   { to: '/dashboard', icon: <Home size={18} />, label: 'Dashboard' },
@@ -72,8 +73,9 @@ export default function Sidebar({ unreadCount = 0, cartCount = 0, onLogout, user
       display: 'flex', flexDirection: 'column',
       padding: '28px 0', position: 'fixed', top: 0, left: 0, zIndex: 10,
     }}>
-      <div style={{ padding: '0 24px 28px' }}>
-        <img src="/src/assets/bazaar.png" alt="Bazaar" style={{ width: '52px', borderRadius: '12px' }} />
+      <div style={{ padding: '0 24px 28px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <img src={logo} alt="Bazaar" style={{ width: '52px', borderRadius: '12px' }} />
+        <span style={{ fontFamily: '"Grand Hotel", cursive', fontSize: '1.6rem', color: '#d95f39', lineHeight: 1 }}>Bazaar</span>
       </div>
 
       {user && (

@@ -12,6 +12,8 @@ function getToken() {
   return localStorage.getItem('token')
 }
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 export default function AdminDashboard({ products = [], onDeleteProduct }) {
   const [users, setUsers] = useState([])
   const [usersLoading, setUsersLoading] = useState(true)
