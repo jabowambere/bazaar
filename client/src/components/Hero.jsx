@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { imgUrl } from '../utils/imgUrl'
+import logo from '../assets/bazaar.png'
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
@@ -111,10 +112,11 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
 
         <form className="search-card" role="search" onSubmit={handleSearch}>
           <label className="sr-only" htmlFor="search">Search assets</label>
+          <img src={logo} alt="Bazaar" style={{ width: '32px', height: '32px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0, margin: '0 4px 0 2px' }} />
           <input
             id="search"
             type="search"
-            placeholder="Search products by name, category, or description..."
+            placeholder="Discover rare finds, premium drops & collector pieces..."
             value={searchValue}
             onChange={e => setSearchValue(e.target.value)}
           />
