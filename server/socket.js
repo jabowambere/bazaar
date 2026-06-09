@@ -7,12 +7,7 @@ const onlineUsers = new Map();
 function initSocket(io) {
   console.log('Socket.io initialized');
   io.broadcastActivity = (actorUserId, event, data) => {
-    const actor = onlineUsers.get(actorUserId);
-    if (actor) {
-      io.except(actor.socketId).emit(event, data);
-    } else {
-      io.emit(event, data);
-    }
+    io.emit(event, { ...data, actorId: actorUserId });
   };
 
   io.on('connection', (socket) => {

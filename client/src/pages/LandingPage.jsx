@@ -21,7 +21,7 @@ function PublicProductCard({ product, onCartClick }) {
       </div>
       <div className="product-content" style={{ color: '#000' }}>
         <p className="product-tool" style={{ color: '#000' }}>{product.productcategory || 'Uncategorized'}</p>
-        <h3 style={{ color: '#fff8ef' }}>{product.productname}</h3>
+        <h3 style={{ color: '#9f3518' }}>{product.productname}</h3>
         <p className="product-description" style={{ color: '#000' }}>{product.productdescription || 'No description added yet.'}</p>
         <div className="product-meta">
           <span style={{ color: '#000' }}>Catalog item</span>

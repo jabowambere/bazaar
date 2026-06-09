@@ -8,26 +8,20 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 }
 
-function getToken() {
-  return localStorage.getItem('token')
-}
+function getToken() { return localStorage.getItem('token') }
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API = import.meta.env.VITE_API_URL || ''
 
 export default function AdminDashboard({ products = [], onDeleteProduct }) {
   const [users, setUsers] = useState([])
   const [usersLoading, setUsersLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
-
   const [confirm, setConfirm] = useState(null)
 
   useEffect(() => {
     fetch(`${API}/users`, { headers: { Authorization: `Bearer ${getToken()}` }, credentials: 'include' })
       .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data)) setUsers(data)
-        else console.error('Users fetch error:', data)
-      })
+      .then(data => { if (Array.isArray(data)) setUsers(data) })
       .catch(err => console.error('Users fetch failed:', err))
       .finally(() => setUsersLoading(false))
   }, [])
@@ -58,7 +52,6 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
 
   const totalValue = products.reduce((s, p) => s + (Number(p.productprice) || 0), 0)
   const categories = new Set(products.map(p => p.productcategory).filter(Boolean))
-
   const tabs = ['overview', 'products', 'users']
 
   return (
@@ -70,14 +63,14 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
         </h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '28px' }}>
+      <div className="dash-stats">
         <StatCard icon={<Package size={22} />} label="Total Products" value={products.length} accent />
         <StatCard icon={<Users size={22} />} label="Total Users" value={users.length} />
         <StatCard icon={<LayoutGrid size={22} />} label="Categories" value={categories.size} />
         <StatCard icon={<DollarSign size={22} />} label="Catalog Value" value={formatCurrency(totalValue)} />
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
         {tabs.map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             padding: '10px 22px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.15)',
@@ -89,7 +82,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
       </div>
 
       {activeTab === 'overview' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div className="dash-panels">
           <div style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px' }}>
             <p style={{ margin: '0 0 16px', fontWeight: 700, color: '#fff8ef', fontSize: '1rem' }}>Latest Products</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -130,7 +123,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
       )}
 
       {activeTab === 'products' && (
-        <div style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', overflow: 'hidden' }}>
+        <div className="admin-table-wrap" style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
@@ -153,13 +146,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
                   <td style={{ padding: '14px 20px', color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem' }}>{p.productcategory}</td>
                   <td style={{ padding: '14px 20px', color: '#9f3518', fontWeight: 700, fontSize: '0.88rem' }}>{formatCurrency(p.productprice)}</td>
                   <td style={{ padding: '14px 20px' }}>
-                    <button onClick={() => setConfirm({
-                      title: 'Delete Product',
-                      message: `Are you sure you want to delete "${p.productname}"? This cannot be undone.`,
-                      confirmLabel: 'Delete',
-                      type: 'danger',
-                      onConfirm: () => { setConfirm(null); onDeleteProduct(p) }
-                    })} style={{ padding: '7px 12px', borderRadius: '999px', border: 'none', background: 'rgba(143,39,22,0.2)', color: '#d95f39', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
+                    <button onClick={() => onDeleteProduct(p)} style={{ padding: '7px 12px', borderRadius: '999px', border: 'none', background: 'rgba(143,39,22,0.2)', color: '#d95f39', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                   </td>
                 </tr>
               ))}
@@ -169,7 +156,7 @@ export default function AdminDashboard({ products = [], onDeleteProduct }) {
       )}
 
       {activeTab === 'users' && (
-        <div style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', overflow: 'hidden' }}>
+        <div className="admin-table-wrap" style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>

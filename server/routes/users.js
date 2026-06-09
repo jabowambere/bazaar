@@ -13,6 +13,22 @@ router.get('/', protect, adminOnly, async (req, res) => {
   }
 });
 
+router.put('/me', protect, async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) user.password = password;
+    await user.save();
+    res.status(200).json({ user: { _id: user._id, name: user.name, email: user.email, role: user.role } });
+  } catch (err) {
+    if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
+    res.status(500).json({ message: 'Update failed' });
+  }
+});
+
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     if (req.params.id === req.user._id.toString())

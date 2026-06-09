@@ -8,7 +8,7 @@ export default function Footer() {
       borderRadius: '32px',
       padding: '40px 40px 28px',
     }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '32px', marginBottom: '40px' }}>
+      <div className="footer-grid" style={{ marginBottom: '40px' }}>
         <div>
           <div className="brand" style={{ marginBottom: '14px' }}>
             <img src={logo} alt="Bazaar" style={{ width: '100px', height: '100px', borderRadius: '15px', objectFit: 'cover' }} />

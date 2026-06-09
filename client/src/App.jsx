@@ -20,6 +20,7 @@ import Profile from './pages/Profile'
 
 function getToken() { return localStorage.getItem('token') }
 const API = import.meta.env.VITE_API_URL || ''
+const SOCKET_URL = API || 'http://localhost:5000'
 
 function AppInner() {
   const { user, logout, loading: authLoading } = useAuth()
@@ -53,11 +54,11 @@ function AppInner() {
     const stored = localStorage.getItem(`notifications_${user._id}`)
     if (stored) setNotificationsRaw(JSON.parse(stored))
     const token = getToken();
-    const socket = io(API || window.location.origin, { auth: { token }, reconnection: true, transports: ['websocket', 'polling'] });
+    const socket = io(SOCKET_URL, { transports: ['websocket', 'polling'], reconnection: true, reconnectionDelay: 1000, reconnectionAttempts: 5 });
     socketRef.current = socket;
-    const doJoin = () => socket.emit('join', token);
-    socket.on('connect', doJoin);
-    socket.on('productActivity', ({ action, productName, by }) => {
+    socket.on('connect', () => socket.emit('join', token));
+    socket.on('productActivity', ({ action, productName, by, actorId }) => {
+      if (actorId === user._id) return;
       const icons = { added: '＋', updated: '✎', deleted: '🗑' };
       const entry = { id: Date.now(), text: `${by} ${action} "${productName}"`, time: 'just now', read: false, icon: icons[action] };
       setNotificationsRaw(prev => {

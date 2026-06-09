@@ -25,14 +25,14 @@ export default function UserDashboard({ products = [], user }) {
         </h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '28px' }}>
+      <div className="dash-stats">
         <StatCard icon={<Package size={22} />} label="Total Products" value={products.length} accent />
         <StatCard icon={<LayoutGrid size={22} />} label="Categories" value={categories.size} />
         <StatCard icon={<DollarSign size={22} />} label="Avg. Price" value={formatCurrency(avgPrice)} />
         <StatCard icon={<TrendingUp size={22} />} label="Total Value" value={formatCurrency(totalValue)} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '28px' }}>
+      <div className="dash-panels">
         <div style={{ background: 'rgba(255,250,242,0.06)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '24px' }}>
           <p style={{ margin: '0 0 20px', fontWeight: 700, color: '#fff8ef', fontSize: '1rem' }}>Quick Actions</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -78,7 +78,7 @@ export default function UserDashboard({ products = [], user }) {
           <p style={{ margin: 0, fontWeight: 700, color: '#fff8ef', fontSize: '1rem' }}>Featured Products</p>
           <Link to="/browse" style={{ color: '#d95f39', fontSize: '0.88rem', textDecoration: 'none' }}>View all →</Link>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+        <div className="dash-featured">
           {products.slice(0, 4).map(p => (
             <div key={p._id} style={{ borderRadius: '20px', overflow: 'hidden', background: 'rgba(255,250,242,0.07)', backdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ height: '140px', background: 'linear-gradient(135deg, #d95f39, #9f3518)', overflow: 'hidden' }}>

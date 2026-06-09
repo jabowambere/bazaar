@@ -154,7 +154,7 @@ export default function Hero({ products, activeCategory, onCategoryChange, onSea
         </div>
       </div>
 
-      <aside className="hero-feature" style={{ transition: 'opacity 0.4s ease', opacity: fade ? 1 : 0 }}>
+      <aside className="hero-feature hero-feature-aside" style={{ transition: 'opacity 0.4s ease', opacity: fade ? 1 : 0 }}>
         <FeaturedPanel product={products[featuredIndex] || null} />
       </aside>
     </section>
